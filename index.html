@@ -103,23 +103,22 @@
     const precioPlateada = 280;
 
     function actualizarPrecio() {
-      const empaque = empaqueSelect.value;
       const cantidad = parseInt(cantidadInput.value) || 1;
+      const empaque = empaqueSelect.value;
 
-      let precioUnitario = precioBase;
+      let total = precioBase * cantidad;
+
       if (empaque === "Caja plateada") {
-        precioUnitario += precioPlateada;
+        total += precioPlateada;
       }
 
-      const total = precioUnitario * cantidad;
-
-      precioUnitarioDiv.textContent = "Precio base por unidad: " + precioUnitario + " CUP";
+      precioUnitarioDiv.textContent = "Precio base por unidad: " + precioBase + " CUP";
       precioTotalDiv.textContent = "Total: " + total + " CUP";
     }
 
     function enviarWhatsapp() {
       const producto = document.getElementById('producto').value.trim();
-      const cantidad = document.getElementById('cantidad').value.trim();
+      const cantidad = parseInt(document.getElementById('cantidad').value.trim());
       const nombre = document.getElementById('nombre').value.trim();
       const empaque = empaqueSelect.value.trim();
 
@@ -133,17 +132,15 @@
         return;
       }
 
-      let precioUnitario = precioBase;
-      if (empaque === "Caja plateada") precioUnitario += precioPlateada;
-
-      const total = precioUnitario * parseInt(cantidad);
+      let total = precioBase * cantidad;
+      if (empaque === "Caja plateada") total += precioPlateada;
 
       const mensaje = "Hola, quiero hacer un pedido de velas:\n\n"
         + "🕯️ Producto: " + producto + "\n"
         + "🎁 Empaque: " + empaque + "\n"
         + "🔢 Cantidad: " + cantidad + "\n"
         + "👤 Nombre: " + nombre + "\n"
-        + "💰 Precio por unidad: " + precioUnitario + " CUP\n"
+        + "💰 Precio por unidad: " + precioBase + " CUP\n"
         + "💵 Total a pagar: " + total + " CUP";
 
       const url = "https://wa.me/53810462?text=" + encodeURIComponent(mensaje);
