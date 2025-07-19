@@ -41,25 +41,6 @@
       font-size: 1rem;
     }
 
-    .color-options {
-      display: flex;
-      margin-top: 10px;
-      gap: 10px;
-    }
-
-    .color-circle {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      cursor: pointer;
-      border: 2px solid transparent;
-      box-shadow: 0 0 3px rgba(0,0,0,0.3);
-    }
-
-    .color-circle.selected {
-      border: 2px solid #000;
-    }
-
     .submit-button {
       width: 100%;
       margin-top: 25px;
@@ -76,9 +57,10 @@
       background-color: #444;
     }
 
-    #precio {
-      margin-top: 25px;
-      font-size: 1.2rem;
+    #precioUnitario,
+    #precioTotal {
+      margin-top: 15px;
+      font-size: 1.1rem;
       font-weight: bold;
       text-align: center;
       color: #000;
@@ -99,67 +81,72 @@
       </select>
 
       <label>Cantidad (1–10):</label>
-      <input type="number" id="cantidad" min="1" max="10" />
+      <input type="number" id="cantidad" min="1" max="10" onchange="actualizarPrecio()" />
 
       <label>Tu nombre:</label>
       <input type="text" id="nombre" />
 
-      <div id="precio">Precio: 600 CUP</div>
+      <div id="precioUnitario">Precio base por unidad: 600 CUP</div>
+      <div id="precioTotal">Total: 600 CUP</div>
 
       <button type="button" class="submit-button" onclick="enviarWhatsapp()">Enviar por WhatsApp</button>
     </form>
   </div>
 
   <script>
-    var empaqueSelect = document.getElementById('empaqueRegalo');
-    var precioDiv = document.getElementById('precio');
+    const empaqueSelect = document.getElementById('empaqueRegalo');
+    const cantidadInput = document.getElementById('cantidad');
+    const precioUnitarioDiv = document.getElementById('precioUnitario');
+    const precioTotalDiv = document.getElementById('precioTotal');
 
     const precioBase = 600;
     const precioPlateada = 280;
 
-    colorCircles.forEach(function(circle) {
-      circle.addEventListener('click', function() {
-        colorCircles.forEach(c => c.classList.remove('selected'));
-        circle.classList.add('selected');
-        colorInput.value = circle.getAttribute('data-color');
-      });
-    });
-
     function actualizarPrecio() {
       const empaque = empaqueSelect.value;
-      let total = precioBase;
+      const cantidad = parseInt(cantidadInput.value) || 1;
 
-      if (empaque === "Caja plateada") total += precioPlateada;
+      let precioUnitario = precioBase;
+      if (empaque === "Caja plateada") {
+        precioUnitario += precioPlateada;
+      }
 
-      precioDiv.textContent = "Precio: " + total + " CUP";
+      const total = precioUnitario * cantidad;
+
+      precioUnitarioDiv.textContent = "Precio base por unidad: " + precioUnitario + " CUP";
+      precioTotalDiv.textContent = "Total: " + total + " CUP";
     }
 
     function enviarWhatsapp() {
-      var producto = document.getElementById('producto').value.trim();
-      var cantidad = document.getElementById('cantidad').value.trim();
-      var nombre = document.getElementById('nombre').value.trim();
-      var empaque = empaqueSelect.value.trim();
+      const producto = document.getElementById('producto').value.trim();
+      const cantidad = document.getElementById('cantidad').value.trim();
+      const nombre = document.getElementById('nombre').value.trim();
+      const empaque = empaqueSelect.value.trim();
 
       if (!cantidad || cantidad < 1 || cantidad > 10) {
-        alert("Ingresa una cantidad válida.");
+        alert("Ingresa una cantidad válida (1 a 10).");
         return;
       }
+
       if (!nombre) {
         alert("Ingresa tu nombre.");
         return;
       }
 
-      let total = precioBase;
-      if (empaque === "Caja plateada") total += precioPlateada;
+      let precioUnitario = precioBase;
+      if (empaque === "Caja plateada") precioUnitario += precioPlateada;
 
-      var mensaje = "Hola, quiero hacer un pedido de velas:\n\n"
+      const total = precioUnitario * parseInt(cantidad);
+
+      const mensaje = "Hola, quiero hacer un pedido de velas:\n\n"
         + "🕯️ Producto: " + producto + "\n"
         + "🎁 Empaque: " + empaque + "\n"
         + "🔢 Cantidad: " + cantidad + "\n"
         + "👤 Nombre: " + nombre + "\n"
-        + "💰 Precio por unidad: " + total + " CUP";
+        + "💰 Precio por unidad: " + precioUnitario + " CUP\n"
+        + "💵 Total a pagar: " + total + " CUP";
 
-      var url = "https://wa.me/53810462?text=" + encodeURIComponent(mensaje);
+      const url = "https://wa.me/53810462?text=" + encodeURIComponent(mensaje);
       window.open(url, "_blank");
     }
 
