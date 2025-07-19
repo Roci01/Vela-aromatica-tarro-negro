@@ -90,39 +90,11 @@
     <h2>Personaliza tu vela de tarro negro</h2>
     <form id="velaForm">
       <label>Producto:</label>
-      <input type="text" id="producto" value="Vela aromática de tarro negro" readonly />
-
-      <label>Aroma:</label>
-      <select id="aroma">
-        <option value="Vainilla">Vainilla</option>
-        <option value="Rosa">Rosa</option>
-        <option value="Arbol">Árbol de té</option>
-        <option value="Menta">Menta</option>
-        <option value="Naranja">Naranja dulce</option>
-        <option value="Limón">Limón</option>
-        <option value="Eucalipto">Eucalipto</option>
-        <option value="Romero">Romero</option>
-        <option value="Incienso">Incienso</option>
-        <option value="Lima">Naranja-lima</option>
-        <option value="Tropical">Aroma Tropical</option>
-        <option value="Canela">Canela</option>
-        <option value="Hierba de limón">Hierba de limón</option>
-      </select>
-
-      <label>Color:</label>
-      <div class="color-options" id="colorOptions">
-        <div class="color-circle" style="background-color: pink;" data-color="Rosado"></div>
-        <div class="color-circle" style="background-color: white; border: 1px solid #aaa;" data-color="Blanco"></div>
-        <div class="color-circle" style="background-color: red;" data-color="Rojo"></div>
-        <div class="color-circle" style="background-color: blue;" data-color="Azul"></div>
-        <div class="color-circle" style="background-color: yellow;" data-color="Amarillo"></div>
-      </div>
-      <input type="hidden" id="color" />
+      <input type="text" id="producto" value="Vela natural de tarro negro lisa" readonly />
 
       <label>¿Deseas empaque especial de regalo?</label>
       <select id="empaqueRegalo" onchange="actualizarPrecio()">
         <option value="Ninguno" selected>No, gracias (bolsita estándar)</option>
-        <option value="Caja kraft">Caja kraft (+100 CUP)</option>
         <option value="Caja plateada">Caja plateada (+320 CUP)</option>
       </select>
 
@@ -139,14 +111,11 @@
   </div>
 
   <script>
-    var colorCircles = document.querySelectorAll('.color-circle');
-    var colorInput = document.getElementById('color');
     var empaqueSelect = document.getElementById('empaqueRegalo');
     var precioDiv = document.getElementById('precio');
 
-    const precioBase = 1500;
-    const precioKraft = 100;
-    const precioPlateada = 320;
+    const precioBase = 600;
+    const precioPlateada = 280;
 
     colorCircles.forEach(function(circle) {
       circle.addEventListener('click', function() {
@@ -160,24 +129,17 @@
       const empaque = empaqueSelect.value;
       let total = precioBase;
 
-      if (empaque === "Caja kraft") total += precioKraft;
-      else if (empaque === "Caja plateada") total += precioPlateada;
+      if (empaque === "Caja plateada") total += precioPlateada;
 
       precioDiv.textContent = "Precio: " + total + " CUP";
     }
 
     function enviarWhatsapp() {
       var producto = document.getElementById('producto').value.trim();
-      var aroma = document.getElementById('aroma').value.trim();
-      var color = document.getElementById('color').value.trim();
       var cantidad = document.getElementById('cantidad').value.trim();
       var nombre = document.getElementById('nombre').value.trim();
       var empaque = empaqueSelect.value.trim();
 
-      if (!color) {
-        alert("Selecciona un color.");
-        return;
-      }
       if (!cantidad || cantidad < 1 || cantidad > 10) {
         alert("Ingresa una cantidad válida.");
         return;
@@ -188,13 +150,10 @@
       }
 
       let total = precioBase;
-      if (empaque === "Caja kraft") total += precioKraft;
-      else if (empaque === "Caja plateada") total += precioPlateada;
+      if (empaque === "Caja plateada") total += precioPlateada;
 
       var mensaje = "Hola, quiero hacer un pedido de velas:\n\n"
         + "🕯️ Producto: " + producto + "\n"
-        + "🌸 Aroma: " + aroma + "\n"
-        + "🎨 Color: " + color + "\n"
         + "🎁 Empaque: " + empaque + "\n"
         + "🔢 Cantidad: " + cantidad + "\n"
         + "👤 Nombre: " + nombre + "\n"
